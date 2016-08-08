@@ -87,7 +87,8 @@
 
 				// if this is a re-run on this element (and tooltip is enabled), remove obsolete tooltip
 				if ($this.data(info_identifier) && options.tooltip) {
-					$this.removeAttr("title");
+					$this.removeAttr('title');
+					$this.removeAttr('data-shorten-original');
 				}
 
 				$this.data(info_identifier, info);
@@ -96,7 +97,12 @@
 			}
 
 			if ( options.tooltip ) {
-				this.setAttribute("title", text);
+				if (options.popup !== true) {
+					this.setAttribute("title", text);
+				}
+				else {
+					$this.attr('data-shorten-original', text);
+				}
 			}
 
 			/**
@@ -198,7 +204,7 @@
 		var canvas = document.createElement("canvas");
 		is_canvasTextSupported = !!(canvas.getContext && canvas.getContext("2d") && (typeof canvas.getContext("2d").fillText === 'function'));
 	}
-	
+
 	$.fn.shorten._is_canvasTextSupported = is_canvasTextSupported;
 	$.fn.shorten._native = _native;
 
@@ -264,5 +270,46 @@
 		tail: "&hellip;",
 		tooltip: true
 	};
+
+
+
+	var DATA_NAME = 'data-shorten-original';
+	var $currentPopup = null;
+
+	function position(object, parent) {
+		var $this = $(object);
+		var $parent = $(parent);
+		var top = $parent.offset().top - $(window).scrollTop() + $parent.outerHeight();
+		var left = $parent.offset().left;
+		var width = $parent.outerWidth();
+
+		$this.css({
+			position: 'fixed',
+			top: top + 'px',
+			left: left + 'px',
+			width: width + 'px',
+			zIndex: '9999'
+		});
+	}
+
+	$(document).on('mouseover', '[' + DATA_NAME + ']', function () {
+		var $this = $(this);
+		$this.css('position', 'relative');
+		var msg = $this.attr(DATA_NAME);
+		var $node = $('<div class="jquery_shorten_tooltip_popup"></div>');
+		$node.text(msg);
+
+		position($node[0], $this);
+
+		$('body').append($node);
+
+		$currentPopup = $node;
+	});
+
+	$(document).on('mouseout', '[' + DATA_NAME + ']', function () {
+		if ($currentPopup) {
+			$currentPopup.remove();
+		}
+	});
 
 })(jQuery);
