@@ -275,6 +275,8 @@
 
 	var DATA_NAME = 'data-shorten-original';
 	var $currentPopup = null;
+	var node = null;
+	var $popup = null;
 
 	function position(object, parent) {
 		var $this = $(object);
@@ -304,11 +306,22 @@
 		$('body').append($node);
 
 		$currentPopup = $node;
+		node = $node[0];
+		$popup = $this;
 	});
 
 	$(document).on('mouseout', '[' + DATA_NAME + ']', function () {
 		if ($currentPopup) {
 			$currentPopup.remove();
+			$currentPopup = null;
+			node = null;
+			$popup = null;
+		}
+	});
+
+	$(window).on('scroll', function () {
+		if (node && $popup) {
+			position(node, $popup);
 		}
 	});
 
