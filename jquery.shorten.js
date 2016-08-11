@@ -69,7 +69,7 @@
       } else {
 				targetWidth = options.width || $this.parent().width();
 			}
-      console.log('width', targetWidth);
+      // console.log('width', targetWidth);
 
 			if (targetWidth < 0) { // jQuery versions < 1.4.4 return negative values for .width() if display:none is used.
 				//$c.log("nonsense target width ", targetWidth);
