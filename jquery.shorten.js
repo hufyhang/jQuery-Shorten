@@ -64,9 +64,12 @@
 
 			if ($this.css("float") != "none") {
 				targetWidth = options.width || $this.width(); // this let's correctly shorten text in floats, but fucks up the rest
-			} else {
+			} else if (options.selfWidth === true) {
+        targetWidth = options.width || $this.width();
+      } else {
 				targetWidth = options.width || $this.parent().width();
 			}
+      console.log('width', targetWidth);
 
 			if (targetWidth < 0) { // jQuery versions < 1.4.4 return negative values for .width() if display:none is used.
 				//$c.log("nonsense target width ", targetWidth);
